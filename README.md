@@ -1,4 +1,4 @@
-[# Cinema Application Backend
+# Cinema Application Backend
 
 Welcome to the backend repository of the Cinema Application! 
 
@@ -56,4 +56,3 @@ Follow the steps below to set up and run the application:
 ## Additional Information
 
 - **Configuration:** Configuration files for the application can be found in the `src/main/resources` directory.
-- **Docker Compose:** The `compose.yaml` file in the `database` directory manages the database services.
