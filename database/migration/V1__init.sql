@@ -39,7 +39,7 @@ CREATE TABLE "screening" (
                              "id" uuid PRIMARY KEY,
                              "screening_room_id" int,
                              "movie_id" uuid,
-                             "start_date" date,
+                             "start_date" timestamp,
                              "advertisements_duration" int
 );
 
