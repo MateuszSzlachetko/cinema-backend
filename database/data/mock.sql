@@ -128,8 +128,8 @@ VALUES
 
 INSERT INTO "movie_poster" ("id", "access_url", "file_name", "file_path")
 VALUES
-    ('123e4567-e89b-12d3-a456-426614174002', 'http://example.com/poster1.jpg', 'poster1.jpg', '/images/posters/poster1.jpg'),
-    ('123e4567-e89b-12d3-a456-426614174003', 'http://example.com/poster2.jpg', 'poster2.jpg', '/images/posters/poster2.jpg');
+    ('123e4567-e89b-12d3-a456-426614174002', '/images/the-great-adventure-poster.jpg', 'the-great-adventure-poster.jpg', '/images/the-great-adventure-poster.jpg'),
+    ('123e4567-e89b-12d3-a456-426614174003', '/images/mystery-in-the-woods-poster.jpg', 'mystery-in-the-woods-poster.jpg', '/images/mystery-in-the-woods-poster.jpg');
 
 INSERT INTO "movie" ("id", "title", "description", "duration", "movie_poster_id")
 VALUES
