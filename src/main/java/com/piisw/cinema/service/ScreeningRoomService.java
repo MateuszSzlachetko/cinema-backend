@@ -1,6 +1,5 @@
 package com.piisw.cinema.service;
 
-import com.piisw.cinema.controller.ScreeningRoomController;
 import com.piisw.cinema.model.DTO.ScreeningRoomDTO;
 import com.piisw.cinema.model.DTO.SeatDTO;
 import com.piisw.cinema.model.entity.*;
@@ -27,16 +26,16 @@ public class ScreeningRoomService {
         }
 
         ScreeningRoom screeningRoom = screening.get().getScreeningRoom();
-
-        Set<Ticket> tickets = new HashSet<>(ticketService.getTicketsByScreeningId(id));
+        Set<Ticket> tickets = new HashSet<>(this.ticketService.getTicketsByScreeningId(id));
 
         Set<SeatReservation> seatReservations = tickets.stream()
                 .map(Ticket::getReservatedSeats)
                 .flatMap(Collection::stream)
                 .collect(Collectors.toSet());
 
-        Set<SeatDTO> seatDTOS = new HashSet<>();
-        for (Seat seat : screeningRoom.getSeats()) {
+        Set<SeatDTO> seatDTOS = new LinkedHashSet<>();
+        Set<Seat> seatsSortedById = screeningRoom.getSeats().stream().sorted(Comparator.comparing(Seat::getId)).collect(Collectors.toCollection(LinkedHashSet::new));
+        for (Seat seat : seatsSortedById) {
             Boolean isFree = seatReservations.stream()
                     .noneMatch(reservation -> reservation.getSeat().getId().equals(seat.getId()));
             seatDTOS.add(new SeatDTO(seat.getId(), seat.getRow(), seat.getColumn(), isFree));

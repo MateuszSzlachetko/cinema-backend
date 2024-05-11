@@ -28,6 +28,7 @@ public class Ticket {
     @NotNull
     private UUID reservationCode;
 
+    @Enumerated(EnumType.STRING)
     @NotNull
     private TicketState state;
 
