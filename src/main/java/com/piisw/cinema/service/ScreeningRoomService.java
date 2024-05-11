@@ -1,0 +1,34 @@
+package com.piisw.cinema.service;
+
+import com.piisw.cinema.model.DTO.ScreeningRoomDTO;
+import com.piisw.cinema.model.entity.Screening;
+import com.piisw.cinema.model.entity.ScreeningRoom;
+import com.piisw.cinema.model.entity.SeatReservation;
+import com.piisw.cinema.model.entity.Ticket;
+import com.piisw.cinema.repository.ScreeningRoomRepository;
+import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.util.*;
+import java.util.stream.Collectors;
+
+@Service
+@AllArgsConstructor
+public class ScreeningRoomService {
+    private final ScreeningRoomRepository screeningRoomRepository;
+    private final ScreeningService screeningService;
+    private final TicketService ticketService;
+
+    public ScreeningRoomDTO getScreeningRoomByScreeningId(UUID id){
+        Optional<Screening> screening = this.screeningService.getScreeningById(id);
+        if (screening.isEmpty()) {
+            throw new NoSuchElementException("Nie znaleziono seansu z takim id");
+        }
+
+        ScreeningRoom screeningRoom = screening.get().getScreeningRoom();
+
+        Set<Ticket> tickets = new HashSet<>(ticketService.getTicketsByScreeningId(id));
+
+        Set<SeatReservation> seatReservations = tickets.stream().map(Ticket::getReservatedSeats).flatMap(Collection::stream).collect(Collectors.toSet());
+    }
+}
