@@ -1,7 +1,7 @@
 package com.piisw.cinema.model.entity;
 
 import com.piisw.cinema.model.enums.UserType;
-import com.piisw.cinema.token.Token;
+import com.piisw.cinema.auth.model.Token;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;

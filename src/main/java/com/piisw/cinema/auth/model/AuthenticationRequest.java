@@ -1,4 +1,4 @@
-package com.piisw.cinema.auth;
+package com.piisw.cinema.auth.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

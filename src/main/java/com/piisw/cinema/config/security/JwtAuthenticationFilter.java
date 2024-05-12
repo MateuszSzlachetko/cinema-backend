@@ -1,6 +1,6 @@
-package com.piisw.cinema.config;
+package com.piisw.cinema.config.security;
 
-import com.piisw.cinema.service.JWTService;
+import com.piisw.cinema.auth.service.JWTService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

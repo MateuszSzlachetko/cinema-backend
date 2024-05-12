@@ -1,4 +1,4 @@
-package com.piisw.cinema.config;
+package com.piisw.cinema.config.security;
 
 import com.piisw.cinema.service.UserService;
 import lombok.RequiredArgsConstructor;

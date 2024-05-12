@@ -1,4 +1,4 @@
-package com.piisw.cinema.config;
+package com.piisw.cinema.config.security;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

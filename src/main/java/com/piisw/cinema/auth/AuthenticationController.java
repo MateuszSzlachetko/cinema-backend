@@ -1,5 +1,9 @@
 package com.piisw.cinema.auth;
 
+import com.piisw.cinema.auth.model.AuthenticationRequest;
+import com.piisw.cinema.auth.model.AuthenticationResponse;
+import com.piisw.cinema.auth.model.RegisterRequest;
+import com.piisw.cinema.auth.service.AuthenticationService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -39,6 +43,4 @@ public class AuthenticationController {
     ) throws IOException {
         service.refreshToken(request, response);
     }
-
-
 }

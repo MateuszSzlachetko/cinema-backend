@@ -1,4 +1,4 @@
-package com.piisw.cinema.auth;
+package com.piisw.cinema.auth.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;

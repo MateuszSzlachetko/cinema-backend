@@ -1,10 +1,11 @@
-package com.piisw.cinema.service;
+package com.piisw.cinema.auth.service;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -15,14 +16,16 @@ import java.util.Map;
 import java.util.function.Function;
 
 @Service
+@RequiredArgsConstructor
 public class JWTService {
 
-    private static final String SECRET_KEY = "54cdf7c1f3b6489d8c6f6e562f75cad75a695a941a211ca8ddc476fcb6bd3848";
-    //    @Value("${application.security.jwt.secret-key}")
+    @Value("${spring.application.security.jwt.secret-key}")
     private String secretKey = "54cdf7c1f3b6489d8c6f6e562f75cad75a695a941a211ca8ddc476fcb6bd3848";
-    //    @Value("${application.security.jwt.expiration}")
+
+    @Value("${spring.application.security.jwt.expiration}")
     private long jwtExpiration = 1000 * 60 * 60 * 4;
-    //    @Value("${application.security.jwt.refresh-token.expiration}")
+
+    @Value("${spring.application.security.jwt.refresh-token.expiration}")
     private long refreshExpiration = 1000 * 60 * 60 * 24;
 
     public String extractUsername(String token) {
@@ -83,7 +86,7 @@ public class JWTService {
     }
 
     private SecretKey getSigningKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
+        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 

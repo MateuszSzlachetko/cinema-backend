@@ -1,4 +1,4 @@
-package com.piisw.cinema.token;
+package com.piisw.cinema.auth.model;
 
 import com.piisw.cinema.model.entity.User;
 import jakarta.persistence.*;

@@ -1,12 +1,10 @@
-package com.piisw.cinema.auth;
+package com.piisw.cinema.auth.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.piisw.cinema.auth.model.*;
+import com.piisw.cinema.auth.repository.TokenRepository;
 import com.piisw.cinema.model.entity.User;
 import com.piisw.cinema.repository.UserRepository;
-import com.piisw.cinema.service.JWTService;
-import com.piisw.cinema.token.Token;
-import com.piisw.cinema.token.TokenRepository;
-import com.piisw.cinema.token.TokenType;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;

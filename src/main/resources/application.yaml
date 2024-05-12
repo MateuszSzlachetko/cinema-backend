@@ -8,6 +8,12 @@ springdoc:
 spring:
   application:
     name: cinema
+    security:
+      jwt:
+        secret-key: "54cdf7c1f3b6489d8c6f6e562f75cad75a695a941a211ca8ddc476fcb6bd3848"
+        expiration: 14400000 # 1000 * 60 * 60 * 4
+        refresh-token:
+          expiration: 86400000 # 1000 * 60 * 60 * 24
   output:
     ansi:
       enabled: ALWAYS
