@@ -4,8 +4,9 @@ CREATE TABLE "user" (
                         "created_at" timestamp,
                         "name" varchar,
                         "surname" varchar,
-                        "phone_number" varchar,
-                        "email" varchar
+                        "phone_number" varchar UNIQUE,
+                        "email" varchar UNIQUE,
+                        "password" varchar
 );
 
 CREATE TABLE "ticket" (
@@ -58,6 +59,15 @@ CREATE TABLE "movie_poster" (
                                 "file_path" varchar
 );
 
+CREATE TABLE "token" (
+    "id" integer PRIMARY KEY,
+    "user_id" uuid,
+    "token" varchar UNIQUE,
+    "token_type" varchar,
+    "revoked" boolean,
+    "expired" boolean
+);
+
 ALTER TABLE "movie" ADD FOREIGN KEY ("movie_poster_id") REFERENCES "movie_poster" ("id");
 
 ALTER TABLE "screening" ADD FOREIGN KEY ("screening_room_id") REFERENCES "screening_room" ("id");
@@ -73,3 +83,9 @@ ALTER TABLE "seat_reservation" ADD FOREIGN KEY ("ticket_id") REFERENCES "ticket"
 ALTER TABLE "ticket" ADD FOREIGN KEY ("screening_id") REFERENCES "screening" ("id");
 
 ALTER TABLE "ticket" ADD FOREIGN KEY ("customer_id") REFERENCES "user" ("id");
+
+ALTER TABLE "token" ADD FOREIGN KEY ("user_id") REFERENCES "user" ("id");
+
+CREATE SEQUENCE token_seq
+    INCREMENT 50
+    START 1;
