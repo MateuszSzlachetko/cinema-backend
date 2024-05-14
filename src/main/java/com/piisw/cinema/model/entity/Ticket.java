@@ -1,5 +1,7 @@
 package com.piisw.cinema.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.piisw.cinema.model.enums.TicketState;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -42,7 +44,8 @@ public class Ticket {
     @NotNull
     private Screening screening;
 
-    @OneToMany(mappedBy = "ticket")
+    @OneToMany(mappedBy = "ticket", cascade = CascadeType.ALL)
     @NotNull
     private Set<SeatReservation> reservatedSeats;
+
 }

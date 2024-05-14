@@ -1,5 +1,7 @@
 package com.piisw.cinema.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.piisw.cinema.model.enums.Column;
 import com.piisw.cinema.model.enums.Row;
 import jakarta.persistence.*;
@@ -35,4 +37,5 @@ public class Seat {
     @ManyToOne
     @JoinColumn(name = "screening_room_id")
     private ScreeningRoom screeningRoom;
+
 }

@@ -1,7 +1,7 @@
 INSERT INTO "user" ("id", "user_type", "created_at", "name", "surname", "phone_number", "email")
 VALUES
-    ('123e4567-e89b-12d3-a456-426614174000', 'customer', '2024-05-09 14:35:00', 'Alice', 'Johnson', '123-456-7890', 'alice.johnson@example.com'),
-    ('123e4567-e89b-12d3-a456-426614174001', 'customer', '2024-05-09 14:35:00', 'Bob', 'Smith', '123-456-7891', 'bob.smith@example.com');
+    ('123e4567-e89b-12d3-a456-426614174000', 'VIEWER', '2024-05-09 14:35:00', 'Alice', 'Johnson', '123-456-7890', 'alice.johnson@example.com'),
+    ('123e4567-e89b-12d3-a456-426614174001', 'VIEWER', '2024-05-09 14:35:00', 'Bob', 'Smith', '123-456-7891', 'bob.smith@example.com');
 
 INSERT INTO "screening_room" ("id", "name")
 VALUES
@@ -143,8 +143,8 @@ VALUES
 
 INSERT INTO "ticket" ("id", "customer_id", "screening_id", "purchase_date", "reservation_code", "state")
 VALUES
-    ('123e4567-e89b-12d3-a456-426614174008', '123e4567-e89b-12d3-a456-426614174000', '123e4567-e89b-12d3-a456-426614174006', '2024-05-09', '123e4567-e89b-12d3-a456-426614174010', 'confirmed'),
-    ('123e4567-e89b-12d3-a456-426614174009', '123e4567-e89b-12d3-a456-426614174001', '123e4567-e89b-12d3-a456-426614174007', '2024-05-09', '123e4567-e89b-12d3-a456-426614174011', 'reserved');
+    ('123e4567-e89b-12d3-a456-426614174008', '123e4567-e89b-12d3-a456-426614174000', '123e4567-e89b-12d3-a456-426614174006', '2024-05-09', '123e4567-e89b-12d3-a456-426614174010', 'INVALID'),
+    ('123e4567-e89b-12d3-a456-426614174009', '123e4567-e89b-12d3-a456-426614174001', '123e4567-e89b-12d3-a456-426614174007', '2024-05-09', '123e4567-e89b-12d3-a456-426614174011', 'INVALID');
 
 INSERT INTO "seat_reservation" ("id", "ticket_id", "seat_id")
 VALUES
