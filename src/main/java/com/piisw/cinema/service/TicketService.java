@@ -1,6 +1,7 @@
 package com.piisw.cinema.service;
 
 import com.piisw.cinema.model.DTO.CheckTicketDTO;
+import com.piisw.cinema.model.DTO.PurchaseTicketRequestDTO;
 import com.piisw.cinema.model.DTO.PurchaseTicketResponseDTO;
 import com.piisw.cinema.model.entity.*;
 import com.piisw.cinema.model.enums.TicketState;
@@ -10,6 +11,7 @@ import com.piisw.cinema.repository.SeatReservationRepository;
 import com.piisw.cinema.repository.TicketRepository;
 import com.piisw.cinema.repository.UserRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -29,20 +31,19 @@ public class TicketService {
         return this.ticketRepository.findTicketsByScreeningId(screeningId);
     }
 
-    public PurchaseTicketResponseDTO purchaseTicket(UUID screeningId, List<Seat> seats, UUID userId) {
+    public PurchaseTicketResponseDTO purchaseTicket(PurchaseTicketRequestDTO purchaseTicketRequest) {
         // Szukamy usera o takim id
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new NoSuchElementException("Nie znaleziono użytkownika o ID: " + userId));
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         // Pobranie seansu na podstawie id
-        Screening screening = screeningRepository.findById(screeningId)
-                .orElseThrow(() -> new NoSuchElementException("Nie znaleziono seansu o id: " + screeningId));
+        Screening screening = screeningRepository.findById(purchaseTicketRequest.getScreeningId())
+                .orElseThrow(() -> new NoSuchElementException("Nie znaleziono seansu o id: " + purchaseTicketRequest.getScreeningId()));
 
         // Pobranie sali kinowej dla seansu
         ScreeningRoom screeningRoom = screening.getScreeningRoom();
 
         // Pobranie wszystkich biletów na dany seans
-        Set<Ticket> tickets = new HashSet<>(this.getTicketsByScreeningId(screeningId));
+        Set<Ticket> tickets = new HashSet<>(this.getTicketsByScreeningId(purchaseTicketRequest.getScreeningId()));
         System.out.println(tickets);
 
         // Pobranie zarezerwowanych miejsc dla danego seansu
@@ -53,7 +54,7 @@ public class TicketService {
 
 
         // Sprawdzenie, czy wybrane przez uzytkownika miejsca nie sa juz zajete
-        if (seats.stream().anyMatch(seat -> seatReservations.stream().anyMatch(reservation -> reservation.getSeat().getId().equals(seat.getId())))) {
+        if (purchaseTicketRequest.getSeats().stream().anyMatch(seat -> seatReservations.stream().anyMatch(reservation -> reservation.getSeat().getId().equals(seat.getId())))) {
             throw new IllegalStateException("Wybrane miejsce jest już zajęte.");
         }
 
@@ -73,7 +74,7 @@ public class TicketService {
                 .build();
 
         // Tworzenie rezerwacji miejsc dla biletu
-        for (Seat seat : seats) {
+        for (Seat seat : purchaseTicketRequest.getSeats()) {
             ticket.getReservatedSeats().add(SeatReservation.builder().ticket(ticket).seat(seat).build());
         }
 
@@ -89,10 +90,8 @@ public class TicketService {
         return ticketResponseDTO;
     }
 
-    public CheckTicketDTO checkTicket(UUID ticketId, UUID userId) {
-        // Szukamy usera o takim id
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new NoSuchElementException("Nie znaleziono użytkownika o ID: " + userId));
+    public CheckTicketDTO checkTicket(UUID ticketId) {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         // Szukamy biletu o takim id
         Ticket ticket = ticketRepository.findById(ticketId)
@@ -101,25 +100,21 @@ public class TicketService {
         LocalDateTime movieStartTime = ticket.getScreening().getStartDate();
         LocalDateTime movieEndTime = movieStartTime.plusMinutes(ticket.getScreening().getAdvertisementsDuration() + ticket.getScreening().getMovie().getDuration());
 
-        if (user.getUserType().equals(UserType.USHER)){
+        if (user.getUserType().equals(UserType.USHER)) {
             if (ChronoUnit.MINUTES.between(LocalDateTime.now(), movieStartTime) > 15) {
                 return createCheckTicketDTO(ticket, "Nie można jeszcze skasować biletu - do rozpoczęcia seansu zostało więcej niż 15 minut.");
-            }
-            else if(LocalDateTime.now().isAfter(movieEndTime) && !ticket.getState().equals(TicketState.VALIDATED)){
+            } else if (LocalDateTime.now().isAfter(movieEndTime) && !ticket.getState().equals(TicketState.VALIDATED)) {
                 ticket.setState(TicketState.INVALID);
                 ticketRepository.save(ticket);
                 return createCheckTicketDTO(ticket, "Bilet jest już nieważny.");
-            }
-            else if (ticket.getState().equals(TicketState.VALIDATED)){
+            } else if (ticket.getState().equals(TicketState.VALIDATED)) {
                 return createCheckTicketDTO(ticket, "Bilet został już sprawdzony");
-            }
-            else {
+            } else {
                 ticket.setState(TicketState.VALIDATED);
                 ticketRepository.save(ticket);
                 return createCheckTicketDTO(ticket, "Bilet pomyślnie sprawdzony. Życzymy miłego seansu.");
             }
-        }
-        else return createCheckTicketDTO(ticket, "Brak uprawnień do sprawdzenia biletu");
+        } else return createCheckTicketDTO(ticket, "Brak uprawnień do sprawdzenia biletu");
 
     }
 

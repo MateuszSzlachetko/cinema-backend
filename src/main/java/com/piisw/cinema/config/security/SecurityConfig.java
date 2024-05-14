@@ -26,6 +26,8 @@ public class SecurityConfig {
                 "/api/swagger-ui/**",
                 "/v3/api-docs/**",
                 "/api/auth/**",
+                "/api/screenings/**",
+                "/api/screening-rooms/screenings/**"
         };
 
         return http
@@ -33,6 +35,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(allowedPaths)
                         .permitAll()
+                        .requestMatchers("/api/tickets/purchase**").hasAnyAuthority("VIEWER","USHER")
+                        .requestMatchers("/api/tickets/check/**").hasAuthority("USHER")
                         .anyRequest()
                         .authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
