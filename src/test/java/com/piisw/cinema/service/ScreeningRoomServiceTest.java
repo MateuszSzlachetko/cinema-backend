@@ -5,7 +5,6 @@ import com.piisw.cinema.model.DTO.SeatDTO;
 import com.piisw.cinema.model.entity.*;
 import com.piisw.cinema.model.enums.Column;
 import com.piisw.cinema.model.enums.Row;
-import com.piisw.cinema.repository.ScreeningRoomRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,9 +20,6 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class ScreeningRoomServiceTest {
-
-    @Mock
-    private ScreeningRoomRepository screeningRoomRepository;
 
     @Mock
     private ScreeningService screeningService;
@@ -101,9 +97,7 @@ public class ScreeningRoomServiceTest {
     public void testGetScreeningRoomByScreeningId_ScreeningNotFound() {
         when(screeningService.getScreeningById(screeningId)).thenReturn(Optional.empty());
 
-        NoSuchElementException exception = assertThrows(NoSuchElementException.class, () -> {
-            screeningRoomService.getScreeningRoomByScreeningId(screeningId);
-        });
+        NoSuchElementException exception = assertThrows(NoSuchElementException.class, () -> screeningRoomService.getScreeningRoomByScreeningId(screeningId));
 
         assertEquals("Nie znaleziono seansu z takim id", exception.getMessage());
     }
