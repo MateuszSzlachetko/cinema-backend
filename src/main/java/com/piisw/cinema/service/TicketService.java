@@ -10,7 +10,9 @@ import com.piisw.cinema.repository.ScreeningRepository;
 import com.piisw.cinema.repository.SeatReservationRepository;
 import com.piisw.cinema.repository.TicketRepository;
 import com.piisw.cinema.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -128,6 +130,23 @@ public class TicketService {
                 .movieTitle(ticket.getScreening().getMovie().getTitle())
                 .checkMessage(checkMessage)
                 .build();
+    }
+
+    @Scheduled(cron = "0 0 23 * * ?")
+    @Transactional
+    public void invalidateExpiredTickets() {
+        List<Ticket> tickets = ticketRepository.findByStateOrState(TicketState.VALID,TicketState.NON_EXISTING);
+
+        for (Ticket ticket : tickets) {
+            LocalDateTime screeningEndTime = ticket.getScreening().getStartDate()
+                    .plusMinutes(ticket.getScreening().getAdvertisementsDuration())
+                    .plusMinutes(ticket.getScreening().getMovie().getDuration());
+
+            if (LocalDateTime.now().isAfter(screeningEndTime)) {
+                ticket.setState(TicketState.INVALID);
+                ticketRepository.save(ticket);
+            }
+        }
     }
 
 }
