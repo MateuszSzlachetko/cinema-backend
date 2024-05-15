@@ -7,9 +7,7 @@ import com.piisw.cinema.model.entity.*;
 import com.piisw.cinema.model.enums.TicketState;
 import com.piisw.cinema.model.enums.UserType;
 import com.piisw.cinema.repository.ScreeningRepository;
-import com.piisw.cinema.repository.SeatReservationRepository;
 import com.piisw.cinema.repository.TicketRepository;
-import com.piisw.cinema.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -39,13 +37,7 @@ class TicketServiceTest {
     private TicketRepository ticketRepository;
 
     @Mock
-    private SeatReservationRepository seatReservationRepository;
-
-    @Mock
     private ScreeningRepository screeningRepository;
-
-    @Mock
-    private UserRepository userRepository;
 
     @Mock
     private SecurityContext securityContext;
