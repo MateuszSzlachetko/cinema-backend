@@ -22,7 +22,6 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.random.RandomGenerator;
 
-import static com.piisw.cinema.model.enums.UserType.VIEWER;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -50,27 +49,52 @@ class TicketServiceTest {
         SecurityContextHolder.setContext(securityContext);
     }
 
-    @Test
-    void testPurchaseTicket_Success() {
-        // Mocking user details
+    private User mockUser(UserType userType) {
         User user = new User();
         user.setId(UUID.randomUUID());
-        user.setUserType(VIEWER);
+        user.setUserType(userType);
 
         when(securityContext.getAuthentication()).thenReturn(authentication);
         when(authentication.getPrincipal()).thenReturn(user);
 
-        // Mocking screening details
+        return user;
+    }
+
+    private Ticket mockInvalidTicket(User user) {
+        Ticket ticket = new Ticket();
+        ticket.setId(UUID.randomUUID());
+        ticket.setState(TicketState.INVALID);
+        ticket.setCustomer(user);
+
+        when(ticketRepository.findById(any(UUID.class))).thenReturn(Optional.of(ticket));
+        return ticket;
+    }
+
+    private Movie mockMovie() {
+        Movie movie = new Movie();
+        movie.setDuration(120);
+        movie.setTitle("Test Movie");
+        return movie;
+    }
+
+    private Screening mockScreening(LocalDateTime startDate){
         Screening screening = new Screening();
         screening.setId(UUID.randomUUID());
-        screening.setStartDate(LocalDateTime.now().plusDays(1));
+        screening.setStartDate(startDate);
         screening.setScreeningRoom(new ScreeningRoom());
+        screening.setAdvertisementsDuration(10);
 
-        // Mocking movie details
-        Movie movie = new Movie();
-        movie.setTitle("Test Movie");
-        screening.setMovie(movie);
+        screening.setMovie(mockMovie());
 
+        return screening;
+    }
+
+
+    @Test
+    void testPurchaseTicket_Success() {
+        mockUser(UserType.VIEWER);
+
+        Screening screening = mockScreening(LocalDateTime.now().plusDays(1));
         when(screeningRepository.findById(any(UUID.class))).thenReturn(Optional.of(screening));
 
         // Mocking seat details
@@ -98,28 +122,15 @@ class TicketServiceTest {
     @Test
     void testCheckTicket_Success() {
         // Mocking user details
-        User user = new User();
-        user.setId(UUID.randomUUID());
-        user.setUserType(UserType.USHER);
-
-        when(securityContext.getAuthentication()).thenReturn(authentication);
-        when(authentication.getPrincipal()).thenReturn(user);
+        User user = mockUser(UserType.USHER);
 
         // Mocking ticket details
-        Ticket ticket = new Ticket();
-        ticket.setId(UUID.randomUUID());
-        ticket.setState(TicketState.INVALID);
-        ticket.setCustomer(user);
+        Ticket ticket = mockInvalidTicket(user);
 
-        Screening screening = new Screening();
-        screening.setStartDate(LocalDateTime.now().plusMinutes(10));
-        screening.setAdvertisementsDuration(10);
-        screening.setMovie(new Movie());
-        screening.getMovie().setDuration(120);
+        Screening screening = mockScreening(LocalDateTime.now().plusMinutes(10));
 
         ticket.setScreening(screening);
 
-        when(ticketRepository.findById(any(UUID.class))).thenReturn(Optional.of(ticket));
         when(ticketRepository.save(any(Ticket.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         // Call service method
@@ -133,32 +144,13 @@ class TicketServiceTest {
     @Test
     void testCheckTicket_NoPermission() {
         // Mocking user details
-        User user = new User();
-        user.setId(UUID.randomUUID());
-        user.setUserType(VIEWER);
-
-        when(securityContext.getAuthentication()).thenReturn(authentication);
-        when(authentication.getPrincipal()).thenReturn(user);
+        User user = mockUser(UserType.VIEWER);
 
         // Mocking ticket details
-        Ticket ticket = new Ticket();
-        ticket.setId(UUID.randomUUID());
-        ticket.setState(TicketState.INVALID);
-        ticket.setCustomer(user);
+        Ticket ticket = mockInvalidTicket(user);
 
-        Screening screening = new Screening();
-        screening.setStartDate(LocalDateTime.now().plusMinutes(10));
-        screening.setAdvertisementsDuration(10);
-
-        Movie movie = new Movie();
-        movie.setDuration(120);
-        movie.setTitle("Test Movie");
-
-        screening.setMovie(movie);
-
+        Screening screening = mockScreening(LocalDateTime.now().plusMinutes(10));
         ticket.setScreening(screening);
-
-        when(ticketRepository.findById(any(UUID.class))).thenReturn(Optional.of(ticket));
 
         // Call service method
         CheckTicketDTO checkTicketDTO = ticketService.checkTicket(ticket.getId());
@@ -172,12 +164,7 @@ class TicketServiceTest {
     @Test
     void testCheckTicket_TicketNotFound() {
         // Mocking user details
-        User user = new User();
-        user.setId(UUID.randomUUID());
-        user.setUserType(UserType.USHER);
-
-        when(securityContext.getAuthentication()).thenReturn(authentication);
-        when(authentication.getPrincipal()).thenReturn(user);
+        mockUser(UserType.USHER);
 
         when(ticketRepository.findById(any(UUID.class))).thenReturn(Optional.empty());
 
