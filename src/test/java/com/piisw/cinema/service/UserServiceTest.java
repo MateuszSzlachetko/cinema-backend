@@ -49,9 +49,7 @@ class UserServiceTest {
         when(userRepository.findByEmail(anyString())).thenReturn(Optional.empty());
 
         // Assertions
-        UsernameNotFoundException exception = assertThrows(UsernameNotFoundException.class, () -> {
-            userService.getUserByUsername("notfound@example.com");
-        });
+        UsernameNotFoundException exception = assertThrows(UsernameNotFoundException.class, () -> userService.getUserByUsername("notfound@example.com"));
 
         assertEquals("User with email: notfound@example.com not found", exception.getMessage());
     }
