@@ -69,7 +69,7 @@ public class TicketService {
         Ticket ticket = Ticket.builder()
                 .purchaseDate(LocalDateTime.now())
                 .reservationCode(reservationCode)
-                .state(TicketState.INVALID)
+                .state(TicketState.NON_EXISTING)
                 .customer(user)
                 .screening(screening)
                 .reservatedSeats(new HashSet<>())
@@ -82,14 +82,12 @@ public class TicketService {
 
         ticketRepository.save(ticket);
 
-        PurchaseTicketResponseDTO ticketResponseDTO = PurchaseTicketResponseDTO.builder()
+        return PurchaseTicketResponseDTO.builder()
                 .purchaseDate(ticket.getPurchaseDate())
                 .reservationCode(ticket.getReservationCode())
                 .screeningId(ticket.getScreening().getId())
                 .movieTitle(ticket.getScreening().getMovie().getTitle())
                 .build();
-
-        return ticketResponseDTO;
     }
 
     public CheckTicketDTO checkTicket(UUID ticketId) {
